@@ -68,6 +68,6 @@ public class TrainingManagementController {
     @GetMapping("/users/{userId}/overdue")
     public ResponseEntity<List<String>> getOverdueTrainings(@PathVariable Long userId) {
         List<TrainingEntity> trainings = service.getTrainingsForUser(userId);
-        return ResponseEntity.ok(service.getOverdueTrainingsForResponse(trainings));
+        return ResponseEntity.ok(service.getOverdueTrainings(trainings));
     }
 }
