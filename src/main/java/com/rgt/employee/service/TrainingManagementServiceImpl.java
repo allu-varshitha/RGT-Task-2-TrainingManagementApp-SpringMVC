@@ -87,7 +87,7 @@ public class TrainingManagementServiceImpl implements TrainingManagementService 
 
         List<TrainingEntity> trainings = trepo.findTrainingsByUser(user);
         if (trainings.isEmpty()) {
-            throw new RuntimeException("No trainings assigned to this user");
+            throw new RuntimeException("No trainings assigned to user");
         }
         return trainings;
     }
@@ -100,7 +100,7 @@ public class TrainingManagementServiceImpl implements TrainingManagementService 
 
         for (UserEntity user : users) {
             if (te.getMapUserWithStatus().containsKey(user)) {
-                return "User with id " + user.getUserId() + " already exists in training";
+                return "User with id " + user.getUserId() + " already exists ";
             } else {
                 te.getMapUserWithStatus().put(user, Status.PENDING);
             }
