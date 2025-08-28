@@ -111,7 +111,7 @@ public class TrainingManagementServiceImpl implements TrainingManagementService 
     }
 
     @Override
-    public List<String> getOverdueTrainingsForResponse(List<TrainingEntity> trainings) {
+    public List<String> getOverdueTrainings(List<TrainingEntity> trainings) {
         List<String> response = new ArrayList<>();
         LocalDate today = LocalDate.now();
         for (TrainingEntity te : trainings) {
