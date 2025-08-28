@@ -26,5 +26,5 @@ public interface TrainingManagementService {
 
     void markTrainingAsCompleted(Long trainingId, Long userId);
 
-    List<String> getOverdueTrainingsForResponse(List<TrainingEntity> trainings);
+    List<String> getOverdueTrainings(List<TrainingEntity> trainings);
 }
