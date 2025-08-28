@@ -7,6 +7,7 @@ import com.rgt.employee.dto.TrainingResponse;
 import com.rgt.employee.dto.UserRequest;
 import com.rgt.employee.dto.UserResponse;
 import com.rgt.employee.model.TrainingEntity;
+import com.rgt.employee.model.UserEntity;
 
 public interface TrainingManagementService {
 
@@ -18,13 +19,17 @@ public interface TrainingManagementService {
 
     List<TrainingResponse> getAllTrainings();
 
-    void assignTrainingsToIndividualUser(Long trainingId, Long userId);
-
-    void assignTrainingToMultipleUsers(Long trainingId, List<Long> userIds);
-
     List<TrainingEntity> getTrainingsForUser(Long userId);
 
-    void markTrainingAsCompleted(Long trainingId, Long userId);
-
     List<String> getOverdueTrainings(List<TrainingEntity> trainings);
+
+<<<<<<< HEAD
+    List<String> getOverdueTrainings(List<TrainingEntity> trainings);
+=======
+	String assignTrainingsToIndividualUser(Long trainingId, UserEntity userId);
+
+	void markTrainingAsCompleted(Long trainingId, UserEntity userId);
+
+	String assignTrainingToMultipleUsers(Long trainingId, List<UserEntity> users);
+>>>>>>> 89aa132 (feat(RGT) TMA optimized code)
 }

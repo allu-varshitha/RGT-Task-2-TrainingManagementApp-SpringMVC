@@ -4,15 +4,15 @@ import com.rgt.employee.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Entity
+@Entity //marks a class as a JPA entity.
 @Table(name = "users")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id //primaary key 
+    @GeneratedValue(strategy = GenerationType.IDENTITY)// auto increment of ids
     private Long userId;
     private String userName;
 

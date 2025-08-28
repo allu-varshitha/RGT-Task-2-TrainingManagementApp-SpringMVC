@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.Map.Entry;
 
 @Service
 public class TrainingManagementServiceImpl implements TrainingManagementService {
@@ -66,42 +67,52 @@ public class TrainingManagementServiceImpl implements TrainingManagementService 
         return response;
     }
     @Override
-    public void assignTrainingsToIndividualUser(Long trainingId, Long userId) {
+    public String assignTrainingsToIndividualUser(Long trainingId, UserEntity userId) {
         TrainingEntity te = trepo.findById(trainingId)
                 .orElseThrow(() -> new RuntimeException("Training not found"));
 
         if (te.getMapUserWithStatus().containsKey(userId)) {
-            System.out.println("User with ID " + userId + " already exists in this training");
-            return;
+            return "User with id " + userId + " already exists in training";
         }
 
         te.getMapUserWithStatus().put(userId, Status.PENDING);
         trepo.save(te);
-        System.out.println("Training assigned to user " + userId);
+        return "Training assigned to user " + userId;
     }
 
     @Override
     public List<TrainingEntity> getTrainingsForUser(Long userId) {
-        List<TrainingEntity> trainings = trepo.findAll();
-        List<TrainingEntity> res = new ArrayList<>();
-        for (TrainingEntity te : trainings) {
-            if (te.getMapUserWithStatus().containsKey(userId)) {
-                res.add(te);
-            }
+        UserEntity user = urepo.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        List<TrainingEntity> trainings = trepo.findTrainingsByUser(user);
+        if (trainings.isEmpty()) {
+            throw new RuntimeException("No trainings assigned to this user");
         }
-        return res;
+        return trainings;
     }
 
+
     @Override
-    public void assignTrainingToMultipleUsers(Long trainingId, List<Long> userIds) {
+    public String assignTrainingToMultipleUsers(Long trainingId, List<UserEntity> users) {
         TrainingEntity te = trepo.findById(trainingId)
                 .orElseThrow(() -> new RuntimeException("Training not found"));
-        te.assignTrainingToUsers(userIds);
+
+        for (UserEntity user : users) {
+            if (te.getMapUserWithStatus().containsKey(user)) {
+                return "User with id " + user.getUserId() + " already exists in training";
+            } else {
+                te.getMapUserWithStatus().put(user, Status.PENDING);
+            }
+        }
+
         trepo.save(te);
+        return "Training assigned to users";
     }
 
+
     @Override
-    public void markTrainingAsCompleted(Long trainingId, Long userId) {
+    public void markTrainingAsCompleted(Long trainingId, UserEntity userId) {
         TrainingEntity te = trepo.findById(trainingId)
                 .orElseThrow(() -> new RuntimeException("Training not found"));
         if (te.getMapUserWithStatus().containsKey(userId)) {
@@ -113,10 +124,14 @@ public class TrainingManagementServiceImpl implements TrainingManagementService 
     @Override
     public List<String> getOverdueTrainings(List<TrainingEntity> trainings) {
         List<String> response = new ArrayList<>();
-        LocalDate today = LocalDate.now();
+        LocalDate today = LocalDate.now();//todays date 
         for (TrainingEntity te : trainings) {
-            for (Map.Entry<Long, Status> entry : te.getMapUserWithStatus().entrySet()) {
+            for (Entry<UserEntity, Status> entry : te.getMapUserWithStatus().entrySet()) {
+            //	entrySet() returns a set of Map.Entry objects.
+            //	Each Map.Entry represents one key-value pair inside the map.
                 if (entry.getValue() == Status.PENDING && te.getTrainingDueDate().isBefore(today)) {
+                	//getKey() -> returns the key.
+                    //getValue() -> returns the value.
                     response.add("User ID: " + entry.getKey()
                             + ", Training: " + te.getTrainingTitle()
                             + ", Due Date: " + te.getTrainingDueDate());
@@ -125,4 +140,6 @@ public class TrainingManagementServiceImpl implements TrainingManagementService 
         }
         return response;
     }
+
+	
 }
