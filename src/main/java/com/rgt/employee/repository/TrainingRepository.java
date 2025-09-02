@@ -13,8 +13,7 @@ import com.rgt.employee.model.UserEntity;
 @Repository
 public interface TrainingRepository  extends JpaRepository<TrainingEntity, Long>{
 
-	@Query("SELECT t FROM TrainingEntity t JOIN t.mapUserWithStatus mus " +
-		       "WHERE KEY(mus) = :user")
+	@Query("select t from TrainingEntity t join t.mapUserWithStatus mus "+ "where key(mus) =:user")
 		List<TrainingEntity> findTrainingsByUser(@Param("user") UserEntity user);
 
 }
