@@ -127,11 +127,7 @@ public class TrainingManagementServiceImpl implements TrainingManagementService 
         LocalDate today = LocalDate.now();//todays date 
         for (TrainingEntity te : trainings) {
             for (Entry<UserEntity, Status> entry : te.getMapUserWithStatus().entrySet()) {
-            //	entrySet() returns a set of Map.Entry objects.
-            //	Each Map.Entry represents one key-value pair inside the map.
-                if (entry.getValue() == Status.PENDING && te.getTrainingDueDate().isBefore(today)) {
-                	//getKey() -> returns the key.
-                    //getValue() -> returns the value.
+                if (entry.getValue() == Status.PENDING && te.getTrainingDueDate().isBefore(today)) 
                     response.add("User ID: " + entry.getKey()
                             + ", Training: " + te.getTrainingTitle()
                             + ", Due Date: " + te.getTrainingDueDate());
