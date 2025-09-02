@@ -21,37 +21,38 @@ public class TrainingManagementServiceImpl implements TrainingManagementService 
     @Autowired
     private TrainingRepository trepo;
 
+    
     @Override
     public void addUsers(UserRequest request) {
-        UserEntity user = new UserEntity();
-        user.setUserName(request.getUserName());
-        user.setRole(request.getRole());
-        urepo.save(user);
+    	UserEntity user=new UserEntity();
+    	user.setUserName(request.getUserName());
+    	user.setRole(request.getRole());
+    	urepo.save(user);
     }
-
+    
     @Override
-    public List<UserResponse> getAllUsers() {
-        List<UserEntity> users = urepo.findAll();
-        List<UserResponse> response = new ArrayList<>();
-        for (UserEntity ue : users) {
-            UserResponse ur = new UserResponse();
-            ur.setUserId(ue.getUserId());
-            ur.setUserName(ue.getUserName());
-            ur.setRole(ue.getRole());
-            response.add(ur);
-        }
-        return response;
+    public List<UserResponse> getAllUsers(){
+    	List<UserEntity> users=urepo.findAll();
+    	List<UserResponse> response= new ArrayList<>();
+    	for(UserEntity ue : users) {
+    		UserResponse ur=new UserResponse();
+    		ur.setUserId(ue.getUserId());
+    		ur.setUserName(ue.getUserName());
+    		ur.setRole(ue.getRole());
+    		response.add(ur);
+    	}
+    	return response;
     }
-
     @Override
     public void addTrainings(TrainingRequest request) {
-        TrainingEntity training = new TrainingEntity();
-        training.setTrainingTitle(request.getTrainingTitle());
-        training.setTrainingDueDate(request.getTrainingDueDate());
-        training.setMapUserWithStatus(new HashMap<>());
-        trepo.save(training);
+    	TrainingEntity training =new TrainingEntity();
+    	training.setTrainingTitle(request.getTrainingTitle());
+    	training.setTrainingDueDate(request.getTrainingDueDate());
+    	training.setMapUserWithStatus(new HashMap<>());
+    	trepo.save(training);
     }
-
+ 
+    
     @Override
     public List<TrainingResponse> getAllTrainings() {
         List<TrainingEntity> trainings = trepo.findAll();
@@ -66,6 +67,7 @@ public class TrainingManagementServiceImpl implements TrainingManagementService 
         }
         return response;
     }
+    
     @Override
     public String assignTrainingsToIndividualUser(Long trainingId, UserEntity userId) {
         TrainingEntity te = trepo.findById(trainingId)
@@ -87,7 +89,7 @@ public class TrainingManagementServiceImpl implements TrainingManagementService 
 
         List<TrainingEntity> trainings = trepo.findTrainingsByUser(user);
         if (trainings.isEmpty()) {
-            throw new RuntimeException("No trainings assigned to user");
+            throw new RuntimeException("No trainings assigned");
         }
         return trainings;
     }
@@ -100,7 +102,7 @@ public class TrainingManagementServiceImpl implements TrainingManagementService 
 
         for (UserEntity user : users) {
             if (te.getMapUserWithStatus().containsKey(user)) {
-                return "User with id " + user.getUserId() + " already exists ";
+                return "User with id " + user.getUserId() + " already exists in training";
             } else {
                 te.getMapUserWithStatus().put(user, Status.PENDING);
             }
@@ -127,7 +129,7 @@ public class TrainingManagementServiceImpl implements TrainingManagementService 
         LocalDate today = LocalDate.now();//todays date 
         for (TrainingEntity te : trainings) {
             for (Entry<UserEntity, Status> entry : te.getMapUserWithStatus().entrySet()) {
-                if (entry.getValue() == Status.PENDING && te.getTrainingDueDate().isBefore(today)) 
+                if (entry.getValue() == Status.PENDING && te.getTrainingDueDate().isBefore(today)) {
                     response.add("User ID: " + entry.getKey()
                             + ", Training: " + te.getTrainingTitle()
                             + ", Due Date: " + te.getTrainingDueDate());
